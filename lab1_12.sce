@@ -1,0 +1,12 @@
+load "matrix.asc";
+disp(x1);
+y2 = rand(M, N);
+disp(y2);
+z = x1*y2';
+disp(z);
+surf(z,'facecol','interp');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+title('My first surf');
+xgrid(5);
