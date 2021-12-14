@@ -1,36 +1,40 @@
-// triang 
-//function [wn]=triang(n)
-//    wn = 1 - abs(n) / N
-//endfunction
+clear, clc
 
-f1 = 20 
-f2 = 28 
-f3 = 60 
-fsample1 = 240 
-fsample2 = 100
-secs = 5;
+function [hz]=H(z)
+    hz = (0.505 - 1.01 * z^-1 + 0.505 * z^-2) ./ (1 - 0.7478 * z^-1 + 0.2722 * z^-2)
+endfunction
 
-fsample = fsample1
-disp('fsample = fsample1 = ' + string(fsample))
-t=(0:1/fsample:secs);
+b0 = 0.505 
+b1 = -1.01
+b2 = 0.505
+a0 = 1
+a1 = -0.7478
+a2 = 0.2722
 
-N = length(t) //количество отсчетов сигнала
+b = [0.505 -1.01 0.505]
+a = [1 -0.7478 0.2722]
 
-a=sin(2 * %pi * f1 * t);
-b=sin(2 * %pi * f2 * t);
-c=sin(2 * %pi * f3 * t);
+poly_b = poly(b, 'z', "coeff")
+poly_a = poly(a, 'z', "coeff")
 
-xa=abs(fft(a));
-xb=abs(fft(b));
-xc=abs(fft(c));
+z=poly(0,'z');
+sys=(0.505 - 1.01 * z + 0.505 * z^2) / (1 - 0.7478 * z + 0.2722 * z^2)
+rep=freq(sys("num"),sys("den"),[0,0.9,1.1,2,3,10,20])
+//disp(poly(a, 'z', "coeff"))
 
-x = (0:fsample - fsample/N)
-plot(t, xa)
-ax=gca(),// gat the handle on the current axes
-ax.data_bounds=[0 0;5 fsample - fsample/N];
+//disp(sys)
 
-d=a(1:N)+0.75*b(1:N)+0.5*c(1:N);
-АmpSpec=(1/(N/2))*abs(fft(d));
+//A=diag([-1,-2]);B=[1;1];C=[1,1];
+//Sys=syslin('c',A,B,C);
+//Systf=ss2tf(Sys)
+//frq=0:0.02:5;
+//w=frq*2*%pi;
+//repf=repfreq(Sys,frq);
+//disp(Sys)
 
-w=triang(N);
-dw=(w)*d;
+//sys = tf2ss(sys)
+//repf=repfreq(sys, frq)
+
+x = 1:100
+plot(H(x), 'g')
+
